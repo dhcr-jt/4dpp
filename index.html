@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pro-Fit Mobile Tracker</title>
+    <style>
+        :root {
+            --bg-dark: #020617;
+            --card-bg: #1e293b;
+            --accent: #38bdf8;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+            --badge-chest: #fb7185;
+            --badge-back: #6366f1;
+            --badge-lower: #4ade80;
+            --badge-mixed: #a855f7;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg-dark); color: var(--text-primary); margin: 0; padding-bottom: 50px; }
+        header { padding: 25px 20px 10px; text-align: center; }
+        h1 { font-size: 22px; font-weight: 800; margin: 0; color: var(--accent); }
+
+        .nav-container {
+            position: sticky; top: 0; background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(10px); padding: 12px 0; z-index: 1000;
+            display: flex; overflow-x: auto; gap: 10px; padding-left: 20px;
+            border-bottom: 1px solid var(--border); scrollbar-width: none;
+        }
+        .nav-container::-webkit-scrollbar { display: none; }
+
+        .day-tab {
+            padding: 10px 20px; border-radius: 20px; background: var(--card-bg);
+            border: 1px solid var(--border); color: var(--text-secondary);
+            font-size: 14px; font-weight: 600; white-space: nowrap; transition: 0.2s;
+        }
+        .day-tab.active { background: var(--accent); color: var(--bg-dark); border-color: var(--accent); }
+        .day-tab.rest-tab { opacity: 0.4; border-style: dashed; }
+
+        .day-panel { display: none; padding: 20px; animation: slideIn 0.3s ease-out; }
+        .day-panel.active { display: block; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .day-label { font-size: 18px; font-weight: 700; }
+        .badge { font-size: 11px; padding: 4px 10px; border-radius: 8px; font-weight: 700; text-transform: uppercase; }
+
+        .ex-card { background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--border); }
+        .ex-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .ex-name { font-weight: 700; font-size: 15px; flex: 1; }
+        .ex-sets { color: var(--accent); font-family: monospace; font-size: 13px; font-weight: 700; }
+        ul { padding-left: 18px; margin: 8px 0; font-size: 13px; color: var(--text-secondary); }
+
+        .video-btn {
+            background: rgba(56, 189, 248, 0.08); color: var(--accent);
+            border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px;
+            padding: 10px; width: 100%; font-size: 13px; font-weight: 600;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+
+        .video-container { 
+            display: none; margin-top: 12px; border-radius: 12px; 
+            overflow: hidden; position: relative; padding-top: 56.25%; background: #000; 
+        }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+        
+        .section-break { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1.2px; margin: 25px 0 12px 5px; display: flex; align-items: center; }
+        .section-break::after { content: ""; flex: 1; height: 1px; background: var(--border); margin-left: 12px; }
+
+        .b-chest { background: rgba(251, 113, 133, 0.2); color: #fb7185; }
+        .b-back { background: rgba(99, 102, 241, 0.2); color: #818cf8; }
+        .b-lower { background: rgba(74, 222, 128, 0.2); color: #4ade80; }
+        .b-mixed { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
+    </style>
+</head>
+<body>
+
+<header><h1>PRO-FIT TRACKER</h1></header>
+
+<div class="nav-container">
+    <button class="day-tab active" onclick="show('d1', this)">Day 1</button>
+    <button class="day-tab" onclick="show('d2', this)">Day 2</button>
+    <button class="day-tab rest-tab">Day 3: Rest</button>
+    <button class="day-tab" onclick="show('d4', this)">Day 4</button>
+    <button class="day-tab" onclick="show('d5', this)">Day 5</button>
+</div>
+
+<div class="day-panel active" id="d1">
+    <div class="panel-header"><span class="day-label">Upper Body</span><span class="badge b-chest">Chest focus</span></div>
+    
+    <div class="ex-card">
+        <div class="ex-header"><span class="ex-name">Dumbbell Floor Press</span><span class="ex-sets">4 × 8–12</span></div>
+        <ul><li>Elbows pause on floor</li><li>Explode up</li></ul>
+        <button class="video-btn" onclick="toggleVid('v1')">🎥 Watch Form</button>
+        <div class="video-container" id="v1"><iframe src="https://www.youtube-nocookie.com/embed/uUGDRwge4F8" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    </div>
+
+    <div class="ex-card">
+        <div class="ex-header"><span class="ex-name">Incline Push-ups</span><span class="ex-sets">4 × 10–15</span></div>
+        <ul><li>Body straight</li><li>Chest to floor</li></ul>
+        <button class="video-btn" onclick="toggleVid('v2')">🎥 Watch Form</button>
+        <div class="video-container" id="v2"><iframe src="https://www.youtube-nocookie.com/embed/uUGDRwge4F8" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    </div>
+
+    <div class="ex-card">
+        <div class="ex-header"><span class="ex-name">Dumbbell Squeeze Press</span><span class="ex-sets">3 × 10–12</span></div>
+        <ul><li>Press dumbbells together</li><li>Slow reps</li></ul>
+        <button class="video-btn" onclick="toggleVid('v3')">🎥 Watch Form</button>
+        <div class="video-container" id="v3"><iframe src="https://www.youtube-nocookie.com/embed/uUGDRwge4F8" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    </div>
+
+    <div class="section-break">Shoulders & Triceps</div>
+
+    <div class="ex-card">
+        <div class="ex-header"><span class="ex-name">Dumbbell Shoulder Press</span><span class="ex-sets">3 × 8–12</span></div>
+        <button class="video-btn" onclick="toggleVid('v4')">🎥 Watch Form</button>
+        <div class="video-container" id="v4"><iframe src="https://www.youtube-nocookie.com/embed/M2rwvNhTOu0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    </div>
+
+    <div class="ex-card">
+        <div class="ex-header"><span class="ex-name">Lateral Raises</span><span class="ex-sets">3 × 12–15</span></div>
+        <button class="video-btn" onclick="toggleVid('v5')">🎥 Watch Form</button>
+        <div class="video-container" id="v5"><iframe src="https://www.youtube-nocookie.com/embed/uUGDRwge4F8" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    </div>
+
+    <div class="ex-card">
+        <div class="ex-header"><span class="ex-name">Overhead Tricep Extension</span><span class="ex-sets">3 × 10–12</span></div>
+        <button class="video-btn" onclick="toggleVid('v6')">🎥 Watch Form</button>
+        <div class="video-container" id="v6"><iframe src="https://www.youtube-nocookie.com/embed/M2rwvNhTOu0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    </div>
+</div>
+
+<div class="day-panel" id="d2">
+    <div class="panel-header"><span class="day-label">Lower + Abs</span><span class="badge b-lower">Legs & core</span></div>
+    
+    <div class="ex-card">
+        <div class="ex-header"><span class="ex-name">Goblet Squats</span><span class="ex-sets">4 × 10–15</span></div>
+        <button class="video-btn" onclick="toggleVid('v7')">🎥 Watch Form</button>
+        <div class="video-container" id="v7"><iframe src="https://www.youtube-nocookie.com/embed/M2rwvNhTOu0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    </div>
+
+    <div class="ex-card">
+        <div class="ex-header"><span class="ex-name">Romanian Deadlifts</span><span class="ex-sets">4 × 8–12</span></div>
+        <button class="video-btn" onclick="toggleVid('v8')">🎥 Watch Form</button>
+        <div class="video-container" id="v8"><iframe src="https://www.youtube-nocookie.com/embed/M2rwvNhTOu0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    </div>
+
+    <div class="ex-card">
+        <div class="ex-header"><span class="ex-name">Walking Lunges</span><span class="ex-sets">3 × 10 each</span></div>
+        <button class="video-btn" onclick="toggleVid('v9')">🎥 Watch Form</button>
+        <div class="video-container" id="v9"><iframe src="https://www.youtube-nocookie.com/embed/Pbmj6xPo-Hw" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    </div>
+
+    <div class="section-break">Abs</div>
+
+    <div class="ex-card">
+        <div class="ex-header"><span class="ex-name">Leg Raises</span><span class="ex-sets">4 × 12–15</span></div>
+        <ul><li>Control movement</li><li>No swinging</li></ul>
+        <button class="video-btn" onclick="toggleVid('v10')">🎥 Watch Form</button>
+        <div class="video-container" id="v10"><iframe src="https://www.youtube-nocookie.com/embed/xJJu-WiROM8" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    </div>
+
+    <div class="ex-card">
+        <div class="ex-header"><span class="ex-name">Plank</span><span class="ex-sets">3 × 45–60 sec</span></div>
+        <ul><li>Straight body line</li><li>Tight core</li></ul>
+    </div>
+
+    <div class="ex-card">
+        <div class="ex-header"><span class="ex-name">Russian Twists</span><span class="ex-sets">3 × 20</span></div>
+        <button class="video-btn" onclick="toggleVid('v11')">🎥 Watch Form</button>
+        <div class="video-container" id="v11"><iframe src="https://www.youtube-nocookie.com/embed/xJJu-WiROM8" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    </div>
+</div>
+
+<div class="day-panel" id="d4">
+    <div class="panel-header"><span class="day-label">Upper Body</span><span class="badge b-back">Back & biceps</span></div>
+
+    <div class="ex-card">
+        <div class="ex-header"><span class="ex-name">Bent-over Rows</span><span class="ex-sets">4 × 8–12</span></div>
+        <button class="video-btn" onclick="toggleVid('v12')">🎥 Watch Form</button>
+        <div class="video-container" id="v12"><iframe src="https://www.youtube-nocookie.com/embed/6gvmcqr226U" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    </div>
+
+    <div class="ex-card">
+        <div class="ex-header"><span class="ex-name">One-arm Dumbbell Row</span><span class="ex-sets">3 × 10 each</span></div>
+        <button class="video-btn" onclick="toggleVid('v13')">🎥 Watch Form</button>
+        <div class="video-container" id="v13"><iframe src="https://www.youtube-nocookie.com/embed/_NjSOXXwBOQ" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    </div>
+
+    <div class="ex-card">
+        <div class="ex-header"><span class="ex-name">Reverse Flys</span><span class="ex-sets">3 × 12–15</span></div>
+        <button class="video-btn" onclick="toggleVid('v14')">🎥 Watch Form</button>
+        <div class="video-container" id="v14"><iframe src="https://www.youtube-nocookie.com/embed/d1QEddtoOq0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    </div>
+
+    <div class="section-break">Biceps & Others</div>
+    <div class="ex-card"><div class="ex-header"><span class="ex-name">Curl Bar Curls</span><span class="ex-sets">4 × 8–12</span></div><ul><li>No swinging</li><li>Squeeze at top</li></ul></div>
+    <div class="ex-card"><div class="ex-header"><span class="ex-name">Hammer Curls</span><span class="ex-sets">3 × 10–12</span></div></div>
+    <div class="ex-card"><div class="ex-header"><span class="ex-name">Concentration Curls</span><span class="ex-sets">3 × 10 each</span></div></div>
+    <div class="ex-card"><div class="ex-header"><span class="ex-name">Shrugs</span><span class="ex-sets">3 × 12–15</span></div></div>
+</div>
+
+<div class="day-panel" id="d5">
+    <div class="panel-header"><span class="day-label">Mixed Load</span><span class="badge b-mixed">Mixed</span></div>
+    <div class="ex-card"><div class="ex-header"><span class="ex-name">Dumbbell Squats</span><span class="ex-sets">4 × 12–15</span></div></div>
+    <div class="ex-card"><div class="ex-header"><span class="ex-name">Stiff-leg Deadlifts</span><span class="ex-sets">3 × 10–12</span></div></div>
+    <div class="ex-card"><div class="ex-header"><span class="ex-name">Bulgarian Split Squats</span><span class="ex-sets">3 × 8 each</span></div></div>
+    
+    <div class="section-break">Abs & Chest Booster</div>
+    <div class="ex-card"><div class="ex-header"><span class="ex-name">Leg Raises</span><span class="ex-sets">3 × 12–15</span></div></div>
+    <div class="ex-card"><div class="ex-header"><span class="ex-name">Plank</span><span class="ex-sets">3 × 45 sec</span></div></div>
+    <div class="ex-card"><div class="ex-header"><span class="ex-name">Push-ups</span><span class="ex-sets">3 × AMRAP</span></div></div>
+    <div class="ex-card"><div class="ex-header"><span class="ex-name">Dumbbell Fly (Floor)</span><span class="ex-sets">3 × 10–12</span></div></div>
+</div>
+
+<script>
+    function show(id, btn) {
+        document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.day-tab:not(.rest-tab)').forEach(t => t.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        btn.classList.add('active');
+        btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+
+    function toggleVid(id) {
+        const v = document.getElementById(id);
+        const iframe = v.querySelector('iframe');
+        if (v.style.display === "block") {
+            v.style.display = "none";
+            const temp = iframe.src;
+            iframe.src = temp; // Stops playback on close
+        } else {
+            v.style.display = "block";
+        }
+    }
+</script>
+
+</body>
+</html>
